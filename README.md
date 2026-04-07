@@ -53,7 +53,7 @@ statement: while (condition) code-block
 Here is an example of a function:
 
 ```
-plus : (x: int, y: int) -> int {
+plus : (x: int, y: int) -> int = {
   total := x + y
   return total
 }
@@ -62,6 +62,10 @@ plus : (x: int, y: int) -> int {
 Note that it's type is (int, int) -> int
 
 Internally, functions should just be stored as their expression trees.  And evaluation should use the typical syntax ```plus(2, 3)```
+
+## Other functions
+
+Make sure to add print and input functions so we can do I/O.
 
 ## Scoping
 
