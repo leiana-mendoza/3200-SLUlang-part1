@@ -4,11 +4,22 @@ from lark import Lark, Transformer, v_args
 
 calc_grammar = r"""
 	# The top-level forms distinguish declaration, initial binding, and reassignment.
-	start : expression			-> value
-		| NAME ":=" expression	-> assign_value
+	program: codeblock
+
+	codeblock: statement
+		| "{" statement_list "}"
+
+	statement_list: statement
+					| statement "\n" statement_list
+					
+	statement: NAME ":=" expression	-> assign_value
 		| NAME "=" expression	-> reassign_value
 		| NAME ":" NAME "=" expression	-> declare_typed_value
 		| NAME ":" NAME			-> declare_typed_variable
+		| "if" "(" expression ")" codeblock			-> if_stmt
+		| "while" "(" expression ")" codeblock		-> while_stmt
+		| "return" expression						-> return_stmt
+		| expression								-> expr_stmt
 		
 	expression : term "+" expression	-> add
 		| term "-" expression			-> sub
@@ -143,7 +154,7 @@ class Calculate(Transformer):
 		return self._combine(expr1, expr2, lambda x, y: x / y)
 
 
-parser = Lark(calc_grammar, parser='lalr')
+parser = Lark(calc_grammar, parser='lalr', start='program')
 transformer = Calculate()
 
 def main():
